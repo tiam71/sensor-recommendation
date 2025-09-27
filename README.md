@@ -4,7 +4,7 @@
 此專案為我在感測器公司實習期間，獨立負責完成的專案。  
 系統能根據用戶輸入的需求，結合感測器產品資料，輸出前 K 筆最符合需求的感測器推薦。
 
-## 系統使用流程
+## 系統功能流程
 ![](docs/functionality.png)
 
 ## 系統架構
@@ -23,19 +23,20 @@
 - **資料來源**：感測器產品資料 (CSV)
 
 ## 專案結構
-sensor-recommendation/
-│── README.md # 專案說明
-│── src/ # 程式碼
-│ ├── main.py # API 呼叫
-│ ├── index.html # 範例網頁
-│ ├── bc_csv7.py # 推薦邏輯
-│ ├── model_saving.py # 模型存取
-│── data/
-│ ├── sensors.csv # 感測器資料 (假資料示範)
-│── model/ # 模型檔 (未上傳, 附下載連結)
-│── docs/
-│ ├── demo.png # 系統運行截圖
-│ └── flowchart.png # 系統流程圖
+sensor-recommendation/ <br>
+│── README.md # 專案說明 <br>
+│── src/ # 程式碼<br>
+│ ├── main.py # API 呼叫<br>
+│ ├── index.html # 範例網頁<br>
+│ ├── bc_csv7.py # 推薦邏輯<br>
+│ ├── model_saving.py # 模型存取<br>
+│── data/<br>
+│ ├── sensors.csv # 感測器資料 (假資料示範)<br>
+│── model/ # 模型檔 (未上傳, 附下載連結)<br>
+│── docs/<br>
+│ ├── demo1&2.png # 系統運行截圖 <br>
+│ ├── functionality.png # 系統功能圖 <br>
+│ └── flowchart.png # 系統流程圖 <br>
 
 ## 成果展示
 Demo on terminal
