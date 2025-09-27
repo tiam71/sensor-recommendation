@@ -31,8 +31,8 @@ sensor-recommendation/ <br>
 │ ├── bc_csv7.py # 推薦邏輯<br>
 │ ├── model_saving.py # 模型存取<br>
 │── data/<br>
-│ ├── sensors.csv # 感測器資料 (假資料示範)<br>
-│── model/ # 模型檔 (未上傳, 附下載連結)<br>
+│ ├── sensors.csv # 感測器資料 (未上傳)<br>
+│── model/ # 模型檔 (未上傳, [附下載連結](https://huggingface.co/sentence-transformers/paraphrase-multilingual-mpnet-base-v2))<br> 
 │── docs/<br>
 │ ├── demo1&2.png # 系統運行截圖 <br>
 │ ├── functionality.png # 系統功能圖 <br>
