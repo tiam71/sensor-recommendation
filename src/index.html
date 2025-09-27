@@ -1,0 +1,599 @@
+   <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧感測器推薦系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .search-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .search-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .advanced-options {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+        }
+
+        .advanced-options.show {
+            display: block;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-group label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .option-group input {
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .toggle-advanced {
+            background: none;
+            border: none;
+            color: #4facfe;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 0;
+            text-decoration: underline;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .status-ready {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #4facfe;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .intent-analysis {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .intent-analysis h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .intent-item {
+            margin-bottom: 10px;
+        }
+
+        .intent-item strong {
+            color: #0d47a1;
+        }
+
+        .intent-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .intent-tag {
+            background: #bbdefb;
+            color: #0d47a1;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        .recommendation-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .card-type {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            background: #ecf0f1;
+            padding: 4px 12px;
+            border-radius: 15px;
+            margin-top: 5px;
+        }
+
+        .score-badge {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .score-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .score-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .card-details {
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            margin-bottom: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            margin-right: 10px;
+        }
+
+        .detail-value {
+            color: #6c757d;
+        }
+
+        .modules-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .module-tag {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .no-results h3 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .search-box {
+                flex-direction: column;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .score-breakdown {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 智慧感測器推薦系統</h1>
+            <p>基於 AI 的感測器智慧推薦，找到最適合您需求的解決方案</p>
+        </div>
+
+        <div class="main-content">
+            <!-- 系統狀態 -->
+            <div id="system-status" class="status-indicator">
+                <span id="status-text">檢查系統狀態中...</span>
+            </div>
+
+            <!-- 搜尋區域 -->
+            <div class="search-section">
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        class="search-input" 
+                        placeholder="請描述您的感測器需求，例如：我需要室內溫濕度監控、火災預警偵測、人流統計等..."
+                        maxlength="500"
+                    >
+                    <button id="search-btn" class="search-btn">🔍 智慧推薦</button>
+                </div>
+
+                <button id="toggle-advanced" class="toggle-advanced">⚙️ 進階設定</button>
+
+                <div id="advanced-options" class="advanced-options">
+                    <div class="options-grid">
+                        <div class="option-group">
+                            <label for="sensor-weight">感測器類型權重</label>
+                            <input type="range" id="sensor-weight" min="0" max="1" step="0.1" value="0.4">
+                            <span id="sensor-weight-value">0.4</span>
+                        </div>
+                        <div class="option-group">
+                            <label for="module-weight">模組匹配權重</label>
+                            <input type="range" id="module-weight" min="0" max="1" step="0.1" value="0.3">
+                            <span id="module-weight-value">0.3</span>
+                        </div>
+                        <div class="option-group">
+                            <label for="semantic-weight">語意相似度權重</label>
+                            <input type="range" id="semantic-weight" min="0" max="1" step="0.1" value="0.25">
+                            <span id="semantic-weight-value">0.25</span>
+                        </div>
+                        <div class="option-group">
+                            <label for="environment-weight">環境適用性權重</label>
+                            <input type="range" id="environment-weight" min="0" max="1" step="0.1" value="0.05">
+                            <span id="environment-weight-value">0.05</span>
+                        </div>
+                        <div class="option-group">
+                            <label for="threshold">推薦門檻</label>
+                            <input type="range" id="threshold" min="0" max="1" step="0.1" value="0.5">
+                            <span id="threshold-value">0.5</span>
+                        </div>
+                        <div class="option-group">
+                            <label for="top-k">推薦數量</label>
+                            <input type="range" id="top-k" min="1" max="10" step="1" value="3">
+                            <span id="top-k-value">3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 結果區域 -->
+            <div id="results-section" class="results-section" style="display: none;">
+                <div id="intent-analysis" class="intent-analysis" style="display: none;"></div>
+                <div id="recommendations"></div>
+            </div>
+
+            <!-- 載入中指示器 -->
+            <div id="loading" class="loading" style="display: none;">
+                正在分析您的需求並推薦感測器...
+            </div>
+        </div>
+    </div>
+<script>
+        // 初始化滑桿
+        const sliders = {
+            'sensor-weight': document.getElementById('sensor-weight'),
+            'module-weight': document.getElementById('module-weight'),
+            'semantic-weight': document.getElementById('semantic-weight'),
+            'environment-weight': document.getElementById('environment-weight'),
+            'threshold': document.getElementById('threshold'),
+            'top-k': document.getElementById('top-k')
+        };
+
+        function initSliders() {
+            for (const key in sliders) {
+                const slider = sliders[key];
+                const valueSpan = document.getElementById(`${key}-value`);
+                valueSpan.textContent = slider.value;
+                slider.addEventListener('input', () => {
+                    valueSpan.textContent = slider.value;
+                });
+            }
+        }
+
+        // HTML escape（防止 XSS）
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 渲染推薦卡片
+        function renderRecommendations(data) {
+            const recommendations = document.getElementById('recommendations');
+            recommendations.innerHTML = '';
+            let list = data.recommendations || data.data || data.results || [];
+
+            if (!Array.isArray(list) || list.length === 0) {
+                recommendations.innerHTML = `<div class="no-results"><p>沒有符合的推薦結果</p></div>`;
+                return;
+            }
+
+            list.forEach((item, i) => {
+                const name = escapeHtml(item.name || item.title || '未知感測器');
+                const type = escapeHtml(item.type || '未分類');
+                const manufacturer = escapeHtml(item.manufacturer || '未知廠商');
+                const description = escapeHtml(item.description || item.features || '無說明');
+                const finalScore = (item.final_score || item.score || 0) * 100;
+                const modules = Array.isArray(item.modules) ? item.modules : [];
+
+                recommendations.innerHTML += `
+                    <div class="recommendation-card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">${name}</div>
+                                <div class="card-type">類型：${type}</div>
+                            </div>
+                            <div class="score-badge">${finalScore.toFixed(1)} 分</div>
+                        </div>
+                        <div class="card-details">
+                            <div><strong>製造商：</strong>${manufacturer}</div>
+                            <div><strong>說明：</strong>${description}</div>
+                            <div><strong>模組：</strong>
+                                ${modules.length > 0 ? modules.map(m => `<span class="module-tag">${escapeHtml(m)}</span>`).join('') : '無模組資訊'}
+                            </div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // 發送搜尋請求
+        function handleSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) return alert('請輸入感測器需求');
+
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results-section');
+            loading.style.display = 'block';
+            results.style.display = 'none';
+
+            const params = {
+                query,
+                sensor_weight: parseFloat(sliders['sensor-weight'].value),
+                module_weight: parseFloat(sliders['module-weight'].value),
+                semantic_weight: parseFloat(sliders['semantic-weight'].value),
+                environment_weight: parseFloat(sliders['environment-weight'].value),
+                threshold: parseFloat(sliders['threshold'].value),
+                top_k: parseInt(sliders['top-k'].value)
+            };
+
+            fetch('http://127.0.0.1:8001/api/recommend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(params)
+            })
+            .then(res => res.json())
+            .then(data => {
+                loading.style.display = 'none';
+                results.style.display = 'block';
+                renderRecommendations(data);
+            })
+            .catch(err => {
+                loading.style.display = 'none';
+                results.style.display = 'block';
+                document.getElementById('recommendations').innerHTML = `<div class="no-results"><p>發生錯誤：${err.message}</p></div>`;
+            });
+        }
+
+        // 檢查系統狀態
+        async function checkSystemStatus() {
+            const statusText = document.getElementById('status-text');
+            const status = document.getElementById('system-status');
+            const searchBtn = document.getElementById('search-btn');
+
+            try {
+                const res = await fetch('http://127.0.0.1:8001/api/status');
+                const data = await res.json();
+
+                if (data.initialized) {
+                    status.className = 'status-indicator status-ready';
+                    statusText.textContent = `✅ 系統已就緒 (共 ${data.total_sensors} 款感測器)`;
+                    searchBtn.disabled = false;
+                } else {
+                    throw new Error('系統尚未完成初始化');
+                }
+            } catch (err) {
+                status.className = 'status-indicator status-error';
+                statusText.textContent = `❌ 系統錯誤：${err.message}`;
+                searchBtn.disabled = true;
+            }
+        }
+
+        // 初始化事件
+        function initEventListeners() {
+            document.getElementById('search-btn').addEventListener('click', handleSearch);
+            document.getElementById('toggle-advanced').addEventListener('click', () => {
+                const adv = document.getElementById('advanced-options');
+                adv.style.display = adv.style.display === 'block' ? 'none' : 'block';
+            });
+        }
+
+        // 初始載入
+        document.addEventListener('DOMContentLoaded', () => {
+            initSliders();
+            initEventListeners();
+            checkSystemStatus();
+        });
+    </script>
+
+</body>
+</html>
