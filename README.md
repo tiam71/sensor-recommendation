@@ -38,8 +38,10 @@ sensor-recommendation/
 │ └── flowchart.png # 系統流程圖
 
 ## 成果展示
-![](docs/demo.png)
-
+Demo on terminal
+![](docs/demo1.png)
+Demo on web
+![](docs/demo2.png)
 ## 收穫
 - 獨立完成一個從需求定義到系統實作的專案  
 - 強化 NLP 與推薦系統的實作能力  
